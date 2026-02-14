@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Will You Be My Valentine?</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: "Poppins", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ff2e63, #ff6f91, #ffe6ea);
+    }
+
+    .container {
+      text-align: center;
+      padding: 60px 50px;
+      background: rgba(255, 255, 255, 0.22);
+      border-radius: 30px;
+      box-shadow: 0 0 35px rgba(255, 0, 80, 0.45);
+      backdrop-filter: blur(12px);
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      position: relative;
+      z-index: 10;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: white;
+      text-shadow: 0px 0px 12px rgba(255, 0, 80, 0.85);
+      margin-bottom: 35px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      padding: 16px 45px;
+      font-size: 1.5rem;
+      border-radius: 60px;
+      transition: all 0.25s ease;
+      font-weight: bold;
+      box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.25);
+    }
+
+    #yesBtn {
+      background: linear-gradient(135deg, #00c853, #00e676);
+      color: white;
+    }
+
+    #yesBtn:hover {
+      transform: scale(1.07);
+      box-shadow: 0px 0px 20px rgba(0, 255, 150, 0.7);
+    }
+
+    #noBtn {
+      background: linear-gradient(135deg, #ff1744, #ff5252);
+      color: white;
+    }
+
+    #noBtn:hover {
+      transform: scale(0.95);
+      box-shadow: 0px 0px 15px rgba(255, 0, 80, 0.6);
+    }
+
+    .message {
+      margin-top: 30px;
+      font-size: 1.6rem;
+      color: white;
+      text-shadow: 0px 0px 10px rgba(255, 0, 80, 0.8);
+      min-height: 45px;
+    }
+
+    /* glowing border */
+    .glow {
+      position: absolute;
+      top: -18px;
+      left: -18px;
+      right: -18px;
+      bottom: -18px;
+      border-radius: 35px;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 35px rgba(255, 0, 120, 0.6);
+      z-index: -1;
+    }
+
+    /* Floating hearts */
+    .heart {
+      position: absolute;
+      top: 100vh;
+      font-size: 20px;
+      animation: floatUp linear forwards;
+      opacity: 0.9;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-120vh) scale(1.8);
+        opacity: 0;
+      }
+    }
+
+    /* Falling rose petals */
+    .petal {
+      position: absolute;
+      top: -10vh;
+      font-size: 22px;
+      animation: fallDown linear forwards;
+      opacity: 0.9;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    @keyframes fallDown {
+      0% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(120vh) rotate(360deg) scale(1.4);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="glow"></div>
+
+    <h1>Will u be my Valentine? 💘</h1>
+
+    <div class="buttons">
+      <button id="yesBtn">Yes 💖</button>
+      <button id="noBtn">No 💔</button>
+    </div>
+
+    <div class="message" id="message"></div>
+  </div>
+
+  <script>
+    let yesBtn = document.getElementById("yesBtn");
+    let noBtn = document.getElementById("noBtn");
+    let message = document.getElementById("message");
+
+    let yesSize = 1;
+    let noSize = 1;
+
+    const noMessages = [
+      "Are you sure? 🥺",
+      "Pls say yes 😭💗",
+      "Don't do me like that 💔",
+      "Come onnn 😔🌹",
+      "You're breaking my heart fr 😭",
+      "Stop pressing noooo 😡💘",
+      "Ok now you're just evil 😭💔",
+      "LAST CHANCE 😤💕"
+    ];
+
+    let noClickCount = 0;
+
+    noBtn.addEventListener("click", () => {
+      yesSize += 0.22;
+      noSize -= 0.12;
+
+      if (noSize < 0.15) noSize = 0.15;
+
+      yesBtn.style.transform = `scale(${yesSize})`;
+      noBtn.style.transform = `scale(${noSize})`;
+
+      message.innerHTML = noMessages[noClickCount % noMessages.length];
+      noClickCount++;
+    });
+
+    yesBtn.addEventListener("click", () => {
+      message.innerHTML = "YAYYYY 😭💍💗 YOU'RE MY VALENTINE FOREVER 🌹💘";
+      yesBtn.style.background = "linear-gradient(135deg, #ff4d9d, #ff85c2)";
+      yesBtn.style.transform = "scale(1.6)";
+      noBtn.style.display = "none";
+    });
+
+    // Floating hearts generator
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+
+      const hearts = ["💗", "💖", "💕", "💘", "❤️"];
+      heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = Math.random() * 25 + 18 + "px";
+      heart.style.animationDuration = Math.random() * 3 + 4 + "s";
+
+      document.body.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 7000);
+    }
+
+    // Falling rose petals generator
+    function createPetal() {
+      const petal = document.createElement("div");
+      petal.classList.add("petal");
+
+      const petals = ["🌹", "🌸", "🥀"];
+      petal.innerHTML = petals[Math.floor(Math.random() * petals.length)];
+
+      petal.style.left = Math.random() * 100 + "vw";
+      petal.style.fontSize = Math.random() * 25 + 18 + "px";
+      petal.style.animationDuration = Math.random() * 3 + 4 + "s";
+
+      document.body.appendChild(petal);
+
+      setTimeout(() => {
+        petal.remove();
+      }, 7000);
+    }
+
+    // spawn hearts + petals
+    setInterval(createHeart, 250);
+    setInterval(createPetal, 350);
+  </script>
+</body>
+</html>
