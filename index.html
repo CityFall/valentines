@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Will You Be My Valentine?</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: "Poppins", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ff2e63, #ff6f91, #ffe6ea);
+      position: relative;
+    }
+
+    .container {
+      text-align: center;
+      padding: 55px 45px;
+      background: rgba(255, 255, 255, 0.22);
+      border-radius: 30px;
+      box-shadow: 0 0 35px rgba(255, 0, 80, 0.45);
+      backdrop-filter: blur(12px);
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      position: relative;
+      z-index: 10;
+      max-width: 90vw;
+      width: 520px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: white;
+      text-shadow: 0px 0px 12px rgba(255, 0, 80, 0.85);
+      margin-bottom: 35px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 25px;
+      flex-wrap: wrap;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      padding: 16px 45px;
+      font-size: 1.5rem;
+      border-radius: 60px;
+      transition: all 0.25s ease;
+      font-weight: bold;
+      box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.25);
+      user-select: none;
+    }
+
+    #yesBtn {
+      background: linear-gradient(135deg, #00c853, #00e676);
+      color: white;
+      z-index: 5;
+    }
+
+    #yesBtn:hover {
+      transform: scale(1.07);
+      box-shadow: 0px 0px 20px rgba(0, 255, 150, 0.7);
+    }
+
+    #noBtn {
+      background: linear-gradient(135deg, #ff1744, #ff5252);
+      color: white;
+      z-index: 5;
+    }
+
+    #noBtn:hover {
+      transform: scale(0.95);
+      box-shadow: 0px 0px 15px rgba(255, 0, 80, 0.6);
+    }
+
+    .message {
+      margin-top: 30px;
+      font-size: 1.6rem;
+      color: white;
+      text-shadow: 0px 0px 10px rgba(255, 0, 80, 0.8);
+      min-height: 45px;
+    }
+
+    .glow {
+      position: absolute;
+      top: -18px;
+      left: -18px;
+      right: -18px;
+      bottom: -18px;
+      border-radius: 35px;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 35px rgba(255, 0, 120, 0.6);
+      z-index: -1;
+    }
+
+    /* Floating hearts */
+    .heart {
+      position: absolute;
+      top: 100vh;
+      font-size: 20px;
+      animation: floatUp linear forwards;
+      opacity: 0.9;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-120vh) scale(1.8);
+        opacity: 0;
+      }
+    }
+
+    /* Falling rose petals */
+    .petal {
+      position: absolute;
+      top: -10vh;
+      font-size: 22px;
+      animation: fallDown linear forwards;
+      opacity: 0.9;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    @keyframes fallDown {
+      0% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(120vh) rotate(360deg) scale(1.4);
+        opacity: 0;
+      }
+    }
+
+    /* =========================
+       POPUP + ENVELOPE ANIMATION
+    ========================== */
+    .popup {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 999;
+      visibility: hidden;
+      opacity: 0;
+      transition: 0.4s ease;
+      padding: 20px;
+    }
+
+    .popup.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .envelope-container {
+      position: relative;
+      width: 420px;
+      max-width: 95vw;
+      height: 520px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .envelope {
+      position: absolute;
+      bottom: 90px;
+      width: 100%;
+      height: 220px;
+      background: #ff5c8a;
+      border-radius: 18px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+      transition: 1.5s ease;
+      z-index: 2;
+    }
+
+    .flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #ff2e63;
+      clip-path: polygon(0 0, 100% 0, 50% 65%);
+      transform-origin: top;
+      transition: 1s ease;
+      z-index: 3;
+    }
+
+    /* Letter starts lower, then floats to center */
+    .letter {
+      position: absolute;
+      width: 92%;
+      left: 50%;
+      transform: translateX(-50%) translateY(120px);
+      bottom: 150px;
+      background: white;
+      border-radius: 16px;
+      padding: 22px;
+      box-sizing: border-box;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      color: #ff2e63;
+      font-weight: 650;
+      overflow-y: auto;
+      max-height: 340px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+      transition: 1.8s ease;
+      z-index: 5;
+      opacity: 0;
+      text-align: left;
+      white-space: pre-line;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      height: 18px;
+      background: #ff2e63;
+      margin-left: 3px;
+      animation: blink 0.7s infinite;
+      border-radius: 4px;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    /* When popup opens: flap opens, letter goes to center */
+    .popup.show .flap {
+      transform: rotateX(180deg);
+    }
+
+    .popup.show .letter {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-60px);
+    }
+
+    /* Envelope falls down and disappears */
+    .popup.show .envelope {
+      transform: translateY(380px);
+      opacity: 0;
+    }
+
+    .closeBtn {
+      margin-top: 15px;
+      background: white;
+      color: #ff2e63;
+      font-size: 1.1rem;
+      font-weight: bold;
+      padding: 12px 30px;
+      border-radius: 40px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.25);
+      transition: 0.2s ease;
+    }
+
+    .closeBtn:hover {
+      transform: scale(1.05);
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container {
+        width: 90vw;
+        padding: 40px 20px;
+        border-radius: 22px;
+      }
+
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 25px;
+      }
+
+      button {
+        padding: 14px 30px;
+        font-size: 1.2rem;
+      }
+
+      .message {
+        font-size: 1.2rem;
+      }
+
+      .letter {
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 380px) {
+      h1 {
+        font-size: 1.7rem;
+      }
+
+      button {
+        padding: 12px 24px;
+        font-size: 1.05rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="glow"></div>
+
+    <h1>Will u be my Valentine? 💘</h1>
+
+    <div class="buttons">
+      <button id="yesBtn">Yes 💖</button>
+      <button id="noBtn">No 💔</button>
+    </div>
+
+    <div class="message" id="message"></div>
+  </div>
+
+  <!-- Audio -->
+  <audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="typingSound">
+    <source src="typing.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Popup -->
+  <div class="popup" id="popup">
+    <div style="text-align:center;">
+      <div class="envelope-container">
+
+        <div class="envelope">
+          <div class="flap"></div>
+        </div>
+
+        <div class="letter">
+          <span id="typedText"></span><span class="cursor"></span>
+        </div>
+
+      </div>
+
+      <button class="closeBtn" onclick="closePopup()">Close 💗</button>
+    </div>
+  </div>
+
+  <script>
+    let yesBtn = document.getElementById("yesBtn");
+    let noBtn = document.getElementById("noBtn");
+    let message = document.getElementById("message");
+    let popup = document.getElementById("popup");
+
+    let typedText = document.getElementById("typedText");
+
+    let bgMusic = document.getElementById("bgMusic");
+    let typingSound = document.getElementById("typingSound");
+
+    let yesSize = 1;
+    let noSize = 1;
+
+    const noMessages = [
+      "Are you sure? 🥺",
+      "Pls say yes 😭💗",
+      "Don't do me like that 💔",
+      "Come onnn 😔🌹",
+      "You're breaking my heart fr 😭",
+      "STOP PRESSING NOOO 😡💘",
+      "Ok now you're just evil 😭💔",
+      "LAST CHANCE 😤💕"
+    ];
+
+    let noClickCount = 0;
+
+    noBtn.addEventListener("click", () => {
+      yesSize += 0.22;
+      noSize -= 0.12;
+
+      if (noSize < 0.25) noSize = 0.25;
+
+      yesBtn.style.transform = `scale(${yesSize})`;
+      noBtn.style.transform = `scale(${noSize})`;
+
+      message.innerHTML = noMessages[noClickCount % noMessages.length];
+      noClickCount++;
+    });
+
+    const loveLetterText =
+`hiiii babbbbbbbbyyyyy 💗💗💗
+
+thank you for randomly spawning into my life!! 😭💘
+
+tdy is valentines day and in the next 4 days is our 6th month anniversaryyyyyy!!! 🌹💕
+
+ik i say ts every month but htet pyw mal kwr br pyit ll i labu soo muchhh!!! 😭💗
+
+thru thick and thin u were always there for me. Ill forever be grateful to hv u in my life 🥺💞
+
+ml lab u soo muchh mwahhhhhhhhh 😘😘😘
+
+and ihy like ts webpage chatgpt and I made for u 💕💻💘`;
+
+    let typingIndex = 0;
+    let typingInterval;
+
+    function startTyping() {
+      typedText.innerHTML = "";
+      typingIndex = 0;
+
+      clearInterval(typingInterval);
+
+      // reset typing sound
+      typingSound.pause();
+      typingSound.currentTime = 0;
+
+      typingInterval = setInterval(() => {
+        typedText.innerHTML += loveLetterText.charAt(typingIndex);
+        typingIndex++;
+
+        // play typing sound
+        typingSound.currentTime = 0;
+        typingSound.play().catch(() => {});
+
+        // auto scroll while typing
+        typedText.parentElement.scrollTop = typedText.parentElement.scrollHeight;
+
+        if (typingIndex >= loveLetterText.length) {
+          clearInterval(typingInterval);
+          typingSound.pause();
+        }
+      }, 85); // slower typing speed (higher = slower)
+    }
+
+    yesBtn.addEventListener("click", () => {
+      message.innerHTML = "YAYYYY 😭💍💗 YOU'RE MY VALENTINE FOREVER 🌹💘";
+      yesBtn.style.background = "linear-gradient(135deg, #ff4d9d, #ff85c2)";
+      yesBtn.style.transform = "scale(1.7)";
+      noBtn.style.display = "none";
+
+      // start music only after click (iphone autoplay policy)
+      bgMusic.volume = 0.4;
+      bgMusic.play().catch(() => {});
+
+      setTimeout(() => {
+        popup.classList.add("show");
+        startTyping();
+      }, 700);
+    });
+
+    function closePopup() {
+      popup.classList.remove("show");
+      clearInterval(typingInterval);
+      typingSound.pause();
+    }
+
+    // Floating hearts generator
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+
+      const hearts = ["💗", "💖", "💕", "💘", "❤️"];
+      heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = Math.random() * 25 + 18 + "px";
+      heart.style.animationDuration = Math.random() * 3 + 4 + "s";
+
+      document.body.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 7000);
+    }
+
+    // Falling rose petals generator
+    function createPetal() {
+      const petal = document.createElement("div");
+      petal.classList.add("petal");
+
+      const petals = ["🌹", "🌸", "🥀"];
+      petal.innerHTML = petals[Math.floor(Math.random() * petals.length)];
+
+      petal.style.left = Math.random() * 100 + "vw";
+      petal.style.fontSize = Math.random() * 25 + 18 + "px";
+      petal.style.animationDuration = Math.random() * 3 + 4 + "s";
+
+      document.body.appendChild(petal);
+
+      setTimeout(() => {
+        petal.remove();
+      }, 7000);
+    }
+
+    setInterval(createHeart, 250);
+    setInterval(createPetal, 350);
+  </script>
+</body>
+</html>
